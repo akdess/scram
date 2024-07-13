@@ -17,6 +17,7 @@ if (!require("devtools")) {
 }
 devtools::install_github("akdess/scram", dependencies = TRUE, build_vignettes = FALSE)
 ```
+# Example input data and source files are here: https://zenodo.org/records/8075888
 
 # Installation from source
 ```r
@@ -24,7 +25,6 @@ install.packages("CaSpER_0.2.0.gz", repos = NULL, type="source")
 install.packages("scramv2_0.1.0.tar.gz", repos = NULL, type="source")
 ```
 
-# Example input data and source files are here: https://zenodo.org/records/8075888
 
 # Input data
 
