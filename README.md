@@ -1,29 +1,7 @@
 
----
-title: "SCRAM: Identification of hybrid tumor cells in glioma"
-author:
-- name: Rachel Naomi Curry
-  affiliation: Baylor College of Medicine, Center for Cell and Gene Therapy 
-- name: Arif O. Harmanci
-  affiliation: University of Texas Health Science Center
-- name: Akdes Serin Harmanci
-  affiliation: Baylor College of Medicine, Department of Neurosurgery
-output:
-  BiocStyle::html_document:
-    toc_float: true
-package: scram
-abstract: |
-  SCRAM R Markdown vignettes.
-vignette: |
-  %\VignetteIndexEntry{SCRAM R Markdown vignettes}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
----
-
-
 # Overview
 
-**SCRAM** will be publicly available from https://github.com/akdess/scram after publication.
+**SCRAM** is available from https://github.com/akdess/scram 
 
 This vignette shows the basic steps for running SCRAM.
 
