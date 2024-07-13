@@ -1,0 +1,481 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+
+
+\usepackage{longtable,booktabs}
+\usepackage{graphicx}
+% grffile has become a legacy package: https://ctan.org/pkg/grffile
+\IfFileExists{grffile.sty}{%
+\usepackage{grffile}
+}{}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+\RequirePackage[]{/Library/Frameworks/R.framework/Versions/4.1/Resources/library/BiocStyle/resources/tex/Bioconductor}
+
+\bioctitle[]{SCRAM: Identification of functional immune and neuronal tumor cells in glioma}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+\author[1]{Rachel Naomi Curry}
+\author[2]{Arif O. Harmanci}
+\author[3]{Akdes Serin Harmanci}
+\affil[1]{Baylor College of Medicine, Center for Cell and Gene Therapy}
+\affil[2]{University of Texas Health Science Center}
+\affil[3]{Baylor College of Medicine, Department of Neurosurgery}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{13 December 2022}
+
+% code highlighting
+\definecolor{fgcolor}{rgb}{0.251, 0.251, 0.251}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.816,0.125,0.439}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.251,0.627,0.251}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.502,0.502,0.502}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.251,0.251,0.251}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.125,0.125,0.941}{#1}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.251,0.251,0.251}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.878,0.439,0.125}{#1}}%
+\let\hlipl\hlkwb
+%
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+%
+\newenvironment{Shaded}{\begin{myshaded}}{\end{myshaded}}
+% set background for result chunks
+\let\oldverbatim\verbatim
+\renewenvironment{verbatim}{\color{codecolor}\begin{myshaded}\begin{oldverbatim}}{\end{oldverbatim}\end{myshaded}}
+%
+\newcommand{\KeywordTok}[1]{\hlkwd{#1}}
+\newcommand{\DataTypeTok}[1]{\hlkwc{#1}}
+\newcommand{\DecValTok}[1]{\hlnum{#1}}
+\newcommand{\BaseNTok}[1]{\hlnum{#1}}
+\newcommand{\FloatTok}[1]{\hlnum{#1}}
+\newcommand{\ConstantTok}[1]{\hlnum{#1}}
+\newcommand{\CharTok}[1]{\hlstr{#1}}
+\newcommand{\SpecialCharTok}[1]{\hlstr{#1}}
+\newcommand{\StringTok}[1]{\hlstr{#1}}
+\newcommand{\VerbatimStringTok}[1]{\hlstr{#1}}
+\newcommand{\SpecialStringTok}[1]{\hlstr{#1}}
+\newcommand{\ImportTok}[1]{{#1}}
+\newcommand{\CommentTok}[1]{\hlcom{#1}}
+\newcommand{\DocumentationTok}[1]{\hlcom{#1}}
+\newcommand{\AnnotationTok}[1]{\hlcom{#1}}
+\newcommand{\CommentVarTok}[1]{\hlcom{#1}}
+\newcommand{\OtherTok}[1]{{#1}}
+\newcommand{\FunctionTok}[1]{\hlstd{#1}}
+\newcommand{\VariableTok}[1]{\hlstd{#1}}
+\newcommand{\ControlFlowTok}[1]{\hlkwd{#1}}
+\newcommand{\OperatorTok}[1]{\hlopt{#1}}
+\newcommand{\BuiltInTok}[1]{{#1}}
+\newcommand{\ExtensionTok}[1]{{#1}}
+\newcommand{\PreprocessorTok}[1]{\textit{#1}}
+\newcommand{\AttributeTok}[1]{{#1}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\InformationTok}[1]{\textcolor{messagecolor}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor{warningcolor}{#1}}
+\newcommand{\AlertTok}[1]{\textcolor{errorcolor}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor{errorcolor}{#1}}
+\newcommand{\NormalTok}[1]{\hlstd{#1}}
+%
+\AtBeginDocument{\bibliographystyle{/Library/Frameworks/R.framework/Versions/4.1/Resources/library/BiocStyle/resources/tex/unsrturl}}
+
+
+\begin{document}
+\maketitle
+\begin{abstract}
+SCRAM R Markdown vignettes.
+\end{abstract}
+
+\packageVersion{scram 0.1.0}
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+\newpage
+}
+\hypertarget{overview}{%
+\section{Overview}\label{overview}}
+
+\textbf{SCRAM} is publicly available from \url{https://github.com/akdess/scram}
+
+This vignette shows the basic steps for running scram.
+
+\hypertarget{installation}{%
+\section{Installation}\label{installation}}
+
+Install latest version from GitHub (requires \href{https://github.com/hadley/devtools}{devtools} package):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"devtools"}\NormalTok{)) \{}
+  \FunctionTok{install.packages}\NormalTok{(}\StringTok{"devtools"}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{devtools}\SpecialCharTok{::}\FunctionTok{install\_github}\NormalTok{(}\StringTok{"akdess/scram"}\NormalTok{, }\AttributeTok{dependencies =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{build\_vignettes =} \ConstantTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{input-data}{%
+\section{Input data}\label{input-data}}
+
+The input to scram consists of Seurat R object of raw expression matrix, clusters and cluster markers. Cluster markers can be obtained by running Seurat R package function \href{https://satijalab.org/seurat/reference/findallmarkers}{FindAllMarkers}.
+
+seurat\_object.rda:seurat object with clustering information
+seurat\_markers.rda:seurat cluster markers, if missing can be generated running the following code
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{load}\NormalTok{(}\StringTok{"./example\_scram\_input/example\_seurat\_object.rda"}\NormalTok{)}
+\ControlFlowTok{if}\NormalTok{(}\FunctionTok{is.null}\NormalTok{(seuratObj}\SpecialCharTok{$}\NormalTok{seurat\_clusters)) }\FunctionTok{meesage}\NormalTok{(}\StringTok{"seurat clusters are missing, please run FindClusters function in Seurat package"}\NormalTok{)}
+\NormalTok{combined.markers }\OtherTok{\textless{}{-}} \FunctionTok{FindAllMarkers}\NormalTok{(seuratObj, }\AttributeTok{only.pos =}\NormalTok{ T, }\AttributeTok{min.pct =} \FloatTok{0.1}\NormalTok{, }\AttributeTok{logfc.threshold =} \FloatTok{0.5}\NormalTok{)}
+\NormalTok{combined.markers }\OtherTok{\textless{}{-}}\NormalTok{ combined.markers[combined.markers}\SpecialCharTok{$}\NormalTok{p\_val\_adj}\SpecialCharTok{\textless{}}\FloatTok{0.05}\NormalTok{,]}
+\FunctionTok{save}\NormalTok{(}\StringTok{"combined.markers"}\NormalTok{, }\AttributeTok{file=}\StringTok{"example\_seurat\_markers.rda"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{running-scram}{%
+\section{Running SCRAM}\label{running-scram}}
+
+\hypertarget{annotating-tumor-cells}{%
+\subsection{Annotating Tumor Cells}\label{annotating-tumor-cells}}
+
+Because tumor cells exhibit a wide range of transcriptional states, we employ redundant and stringent approaches to annotate tumor cells using 3 modular components: (1) marker-expression modeling, (2) genotyping of CNVs on all cells (3) RNA-inferred mutational profiling of known glioma mutations (i.e.~IDH1, EGFR).
+
+\hypertarget{tumor-marker-expression-model}{%
+\subsubsection{Tumor Marker Expression Model}\label{tumor-marker-expression-model}}
+
+Given the expressional heterogeneity of tumor markers in non-tumor cells , we used previously published datasets of tumor and non-tumor cells to establish a marker expression-based tumor classification model (i.e.~thresholding requirements for ``high expression'' annotation) for the tumor markers PDGFRA, EGFR, CDK4, IGFBP2, IGFBP5 and SOX2. For each tumor marker gene, an independent classifier model is built using: (1) Allen Brain mouse and human scRNA-seq data, which is the largest compendium of healthy brain data, as a training set for host cells; and (2) a compendium of publicly available brain-tumor scRNA-seq datasets as a training set for tumor cells. Finally, we model the expression as a mixture of Gaussian distributions for identification and classification of non-tumor vs tumor cells
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{load}\NormalTok{(}\StringTok{"./example\_scram\_input/example\_seurat\_object.rda"}\NormalTok{)}
+\NormalTok{expr\_features }\OtherTok{\textless{}{-}} \FunctionTok{generate\_HighExpressionFeaturesFromModel}\NormalTok{(seuratObj, }
+\AttributeTok{tumor\_markers=} \FunctionTok{c}\NormalTok{(}\StringTok{"PDGFRA"}\NormalTok{ ,}\StringTok{"EGFR"}\NormalTok{  , }\StringTok{"CDK4"}\NormalTok{  , }\StringTok{"IGFBP2"}\NormalTok{ ,}\StringTok{"SOX2"}\NormalTok{   , }\StringTok{"IGFBP5"}\NormalTok{), }\AttributeTok{k=}\DecValTok{3}\NormalTok{)}
+\NormalTok{tumors }\OtherTok{\textless{}{-}}\NormalTok{ expr\_features}\SpecialCharTok{$}\NormalTok{tumor\_markers}
+\FunctionTok{rownames}\NormalTok{(tumors)[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{6}\NormalTok{] }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(}\StringTok{"HIGH\_"}\NormalTok{,}\FunctionTok{rownames}\NormalTok{(tumors)[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{6}\NormalTok{] )}
+\NormalTok{tumors[, }\FunctionTok{which}\NormalTok{(}\FunctionTok{apply}\NormalTok{(tumors, }\DecValTok{2}\NormalTok{, sum)}\SpecialCharTok{==}\DecValTok{1}\NormalTok{)] }\OtherTok{\textless{}{-}} \DecValTok{0}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{large-scale-cnv-calls-in-single-cell-resolution}{%
+\subsubsection{Large Scale CNV calls in single cell resolution}\label{large-scale-cnv-calls-in-single-cell-resolution}}
+
+CNVs are a hallmark feature of tumor cells that can be used to classify tumor vs.~non-tumor cells alongside or in the absence of expression markers. However, detection of CNVs from scRNA-seq data is inherently noisy due to a multitude of factors, including drop-outs and unmatched control sets and requires a set of cells that are known to be tumor cells. To estimate a ``clean'' set of CNV calls that can provide reliable CNV-based tumor scores, we used a pure tumor pseudobulk sample.
+Estimation of CNV profiles using patient-specific pure tumor pseudobulk samples. We first use our expression-based marker model from Module 1 to identify tumor cells. The collection of cells that are assigned as ``tumor'' using Module 1 is treated as a pure tumor cell cohort.
+
+CNV calling of patient-specific pure pseudobulk samples: We hypothesize that the pseudobulk sample contains representative sets of CNVs with high probability and therefore should be useful to identify a clean CNV call-set. The CNV calling on the pseudobulk samples is performed using our CNV calling algorithm, CaSpER, for each patient. CaSpER CNV calls are used as the ground truth large-scale CNV calls for each patient.
+Genotyping of CNVs on all cells. After CNVs are identified from the pseudobulk sample, we genotype the set of CNVs on all cells and generate a binary matrix that represents the existence of CNVs on the cells, i.e., CNV\_(i,j).
+SeuratObj should have orig.ident with sample ids, and another metadata with id ``tumorType'' with ``Normal'' annotation for control cells
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(CaSpER)}
+\FunctionTok{library}\NormalTok{(scram)}
+\FunctionTok{load}\NormalTok{(}\StringTok{"./example\_scram\_input/example\_seurat\_object.rda"}\NormalTok{)}
+\FunctionTok{load}\NormalTok{(}\StringTok{"./example\_scram\_input/example\_seurat\_markers.rda"}\NormalTok{)}
+\FunctionTok{DefaultAssay}\NormalTok{(seuratObj) }\OtherTok{\textless{}{-}} \StringTok{"RNA"}
+\NormalTok{possible\_tumors  }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(}\FunctionTok{Idents}\NormalTok{(seuratObj) }\SpecialCharTok{\%in\%} \FunctionTok{unique}\NormalTok{(combined.markers[combined.markers}\SpecialCharTok{$}\NormalTok{gene }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"EGFR"}\NormalTok{, }\StringTok{"PDGFRA"}\NormalTok{, }\StringTok{"CDK4"}\NormalTok{) }\SpecialCharTok{\&}\NormalTok{ combined.markers}\SpecialCharTok{$}\NormalTok{avg\_log2FC}\SpecialCharTok{\textgreater{}}\DecValTok{1}\NormalTok{,}\StringTok{"cluster"}\NormalTok{]))}
+\NormalTok{control\_cells }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(seuratObj}\SpecialCharTok{$}\NormalTok{tumorType}\SpecialCharTok{==}\StringTok{"control"}\NormalTok{)}
+\NormalTok{seuratObj}\SpecialCharTok{$}\NormalTok{orig.ident[control\_cells] }\OtherTok{\textless{}{-}} \StringTok{"control"}
+\NormalTok{cells }\OtherTok{\textless{}{-}} \FunctionTok{colnames}\NormalTok{(seuratObj)[}\FunctionTok{unique}\NormalTok{(}\FunctionTok{c}\NormalTok{(control\_cells, possible\_tumors, }\FunctionTok{which}\NormalTok{(}\FunctionTok{apply}\NormalTok{(tumors, }\DecValTok{2}\NormalTok{, sum)}\SpecialCharTok{\textgreater{}}\DecValTok{0}\NormalTok{)))]}
+\NormalTok{sub }\OtherTok{\textless{}{-}} \FunctionTok{subset}\NormalTok{(seuratObj, }\AttributeTok{cells=}\NormalTok{cells)}
+\NormalTok{data }\OtherTok{\textless{}{-}}\NormalTok{ sub}\SpecialCharTok{@}\NormalTok{assays}\SpecialCharTok{$}\NormalTok{RNA}\SpecialCharTok{@}\NormalTok{counts}
+\NormalTok{samples  }\OtherTok{\textless{}{-}} \FunctionTok{names}\NormalTok{(}\FunctionTok{which}\NormalTok{(}\FunctionTok{table}\NormalTok{(sub}\SpecialCharTok{$}\NormalTok{orig.ident)}\SpecialCharTok{\textgreater{}}\DecValTok{10}\NormalTok{))}
+\NormalTok{data2 }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(samples), }\ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{rowSums}\NormalTok{(data[, }\FunctionTok{which}\NormalTok{(sub}\SpecialCharTok{$}\NormalTok{orig.ident}\SpecialCharTok{==}\NormalTok{samples[x]), }\AttributeTok{na.rm =}\NormalTok{ T]))}
+\NormalTok{raw.data }\OtherTok{\textless{}{-}} \FunctionTok{do.call}\NormalTok{(cbind, data2)}
+\FunctionTok{colnames}\NormalTok{(raw.data) }\OtherTok{\textless{}{-}}\NormalTok{ samples}
+\NormalTok{raw.data}\OtherTok{\textless{}{-}} \FunctionTok{t}\NormalTok{(}\FunctionTok{apply}\NormalTok{(raw.data, }\DecValTok{1}\NormalTok{, }\ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{as.numeric}\NormalTok{(x)))}
+\FunctionTok{colnames}\NormalTok{(raw.data) }\OtherTok{\textless{}{-}}\NormalTok{ samples}
+
+\NormalTok{annotation }\OtherTok{\textless{}{-}} \FunctionTok{generateAnnotation}\NormalTok{(}\AttributeTok{id\_type=}\StringTok{"hgnc\_symbol"}\NormalTok{, }\AttributeTok{genes=}\FunctionTok{rownames}\NormalTok{(raw.data), }\AttributeTok{ishg19=}\NormalTok{F,}
+ \AttributeTok{centromere=}\NormalTok{centromere)}
+\NormalTok{raw.data }\OtherTok{\textless{}{-}}\NormalTok{ raw.data[}\FunctionTok{match}\NormalTok{( annotation}\SpecialCharTok{$}\NormalTok{Gene,}\FunctionTok{rownames}\NormalTok{(raw.data)), ]}
+
+\NormalTok{cytoband }\OtherTok{\textless{}{-}}\NormalTok{ cytoband\_hg38}
+
+\NormalTok{object }\OtherTok{\textless{}{-}} \FunctionTok{CreateCasperObject}\NormalTok{(}\AttributeTok{raw.data=}\NormalTok{raw.data,}\AttributeTok{loh.name.mapping=}\ConstantTok{NULL}\NormalTok{, }
+  \AttributeTok{sequencing.type=}\StringTok{"bulk"}\NormalTok{, }
+  \AttributeTok{cnv.scale=}\DecValTok{3}\NormalTok{, }\AttributeTok{loh.scale=}\DecValTok{3}\NormalTok{, }\AttributeTok{window.length=}\DecValTok{50}\NormalTok{, }\AttributeTok{length.iterations=}\DecValTok{50}\NormalTok{,}
+  \AttributeTok{expr.cutoff =} \DecValTok{1}\NormalTok{, }\AttributeTok{filter=}\StringTok{"mean"}\NormalTok{, }\AttributeTok{matrix.type=}\StringTok{"raw"}\NormalTok{, }
+  \AttributeTok{annotation=}\NormalTok{annotation, }\AttributeTok{method=}\StringTok{"iterative"}\NormalTok{, }\AttributeTok{loh=}\ConstantTok{NULL}\NormalTok{, }
+  \AttributeTok{control.sample.ids=}\StringTok{"control"}\NormalTok{, }\AttributeTok{cytoband=}\NormalTok{cytoband)}
+
+\NormalTok{project }\OtherTok{\textless{}{-}} \StringTok{"EXAMPLE"}
+\NormalTok{object}\OtherTok{\textless{}{-}} \FunctionTok{runCaSpERWithoutLOH}\NormalTok{(object, }\AttributeTok{project=}\FunctionTok{paste0}\NormalTok{(project, }\StringTok{"\_BULK"}\NormalTok{)) }
+
+\end{Highlighting}
+\end{Shaded}
+
+Visualing patient specific pseudobulk data
+
+\begin{Shaded}
+\begin{Highlighting}[]
+
+\NormalTok{data }\OtherTok{\textless{}{-}}\NormalTok{ object}\SpecialCharTok{@}\NormalTok{control.normalized[[}\DecValTok{3}\NormalTok{]]}
+\NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{na.omit}\NormalTok{(data)}
+\NormalTok{x.center }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(data)}
+\NormalTok{quantiles }\OtherTok{=} \FunctionTok{quantile}\NormalTok{(data[data }\SpecialCharTok{!=}\NormalTok{ x.center], }\FunctionTok{c}\NormalTok{(}\FloatTok{0.01}\NormalTok{, }\FloatTok{0.99}\NormalTok{))}
+\NormalTok{delta }\OtherTok{=} \FunctionTok{max}\NormalTok{(}\FunctionTok{abs}\NormalTok{(}\FunctionTok{c}\NormalTok{(x.center }\SpecialCharTok{{-}}\NormalTok{ quantiles[}\DecValTok{1}\NormalTok{], quantiles[}\DecValTok{2}\NormalTok{] }\SpecialCharTok{{-}} 
+\NormalTok{    x.center)))}
+\NormalTok{low\_threshold }\OtherTok{=}\NormalTok{ x.center }\SpecialCharTok{{-}}\NormalTok{ delta}
+\NormalTok{high\_threshold }\OtherTok{=}\NormalTok{ x.center }\SpecialCharTok{+}\NormalTok{ delta}
+\NormalTok{x.range }\OtherTok{=} \FunctionTok{c}\NormalTok{(low\_threshold, high\_threshold)}
+\NormalTok{data[data }\SpecialCharTok{\textless{}}\NormalTok{ low\_threshold] }\OtherTok{\textless{}{-}}\NormalTok{ low\_threshold}
+\NormalTok{data[data }\SpecialCharTok{\textgreater{}}\NormalTok{ high\_threshold] }\OtherTok{\textless{}{-}}\NormalTok{ high\_threshold}
+
+\NormalTok{breaks }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\AttributeTok{length =} \DecValTok{16}\NormalTok{)}
+\NormalTok{color }\OtherTok{\textless{}{-}} \FunctionTok{colorRampPalette}\NormalTok{(}\FunctionTok{rev}\NormalTok{(}\FunctionTok{brewer.pal}\NormalTok{(}\DecValTok{11}\NormalTok{, }\StringTok{"RdYlBu"}\NormalTok{)))(}\FunctionTok{length}\NormalTok{(breaks))}
+\NormalTok{idx }\OtherTok{\textless{}{-}} \FunctionTok{cumsum}\NormalTok{(}\FunctionTok{table}\NormalTok{(object}\SpecialCharTok{@}\NormalTok{annotation.filt}\SpecialCharTok{$}\NormalTok{Chr)[}\FunctionTok{as.character}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{22}\NormalTok{)])}
+\NormalTok{xlabel }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\StringTok{""}\NormalTok{, }\FunctionTok{length}\NormalTok{(}\FunctionTok{rownames}\NormalTok{(object}\SpecialCharTok{@}\NormalTok{data)))}
+\NormalTok{half }\OtherTok{\textless{}{-}} \FunctionTok{round}\NormalTok{(}\FunctionTok{table}\NormalTok{(object}\SpecialCharTok{@}\NormalTok{annotation.filt}\SpecialCharTok{$}\NormalTok{Chr)[}\FunctionTok{as.character}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{22}\NormalTok{)]}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)[}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]}
+\NormalTok{xpos }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(half[}\DecValTok{1}\NormalTok{], (idx[}\SpecialCharTok{{-}}\DecValTok{22}\NormalTok{] }\SpecialCharTok{+}\NormalTok{ half))}
+\NormalTok{xlabel[xpos] }\OtherTok{\textless{}{-}} \DecValTok{1}\SpecialCharTok{:}\DecValTok{22}
+\NormalTok{xlabel[}\FunctionTok{which}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(xlabel))] }\OtherTok{\textless{}{-}} \StringTok{""}
+
+\NormalTok{thr }\OtherTok{\textless{}{-}} \DecValTok{1}
+\FunctionTok{load}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(project, }\StringTok{"\_BULK\_finalChrMat\_thr\_"}\NormalTok{, thr, }\StringTok{".rda"}\NormalTok{))}
+
+\NormalTok{p}\OtherTok{\textless{}{-}} \FunctionTok{pheatmap}\NormalTok{(}\FunctionTok{t}\NormalTok{(finalChrMat),}\AttributeTok{cluster\_cols =}\NormalTok{ F, }\AttributeTok{cluster\_rows =}\NormalTok{ T, }\AttributeTok{fontsize\_row=}\DecValTok{3}\NormalTok{,}
+                        \AttributeTok{color =} \FunctionTok{colorRampPalette}\NormalTok{(}\FunctionTok{rev}\NormalTok{(}\FunctionTok{brewer.pal}\NormalTok{(}\AttributeTok{n =} \DecValTok{7}\NormalTok{, }\AttributeTok{name =} \StringTok{"RdBu"}\NormalTok{)))(}\DecValTok{100}\NormalTok{),}
+                \AttributeTok{show\_rownames =}\NormalTok{ T)}
+
+
+\NormalTok{p2}\OtherTok{\textless{}{-}} \FunctionTok{pheatmap}\NormalTok{(}\FunctionTok{t}\NormalTok{(data[ ,p}\SpecialCharTok{$}\NormalTok{tree\_row}\SpecialCharTok{$}\NormalTok{order]), }\AttributeTok{cluster\_cols =}\NormalTok{ F, }\AttributeTok{cluster\_rows =}\NormalTok{ F, }\AttributeTok{gaps\_col =}\NormalTok{ idx[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{21}\NormalTok{], }
+           \AttributeTok{labels\_col =}\NormalTok{ xlabel,}\AttributeTok{color =}\NormalTok{ color, }\AttributeTok{breaks =}\NormalTok{ breaks, }\AttributeTok{fontsize\_row=}\DecValTok{3}\NormalTok{,}
+                \AttributeTok{show\_rownames =}\NormalTok{ T)}
+
+\NormalTok{plot\_list }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{()}
+\NormalTok{plot\_list[[}\DecValTok{1}\NormalTok{]] }\OtherTok{=}\NormalTok{ p2[[}\DecValTok{4}\NormalTok{]]     }\DocumentationTok{\#\#to save each plot into a list. note the [[4]]}
+\NormalTok{plot\_list[[}\DecValTok{2}\NormalTok{]] }\OtherTok{=}\NormalTok{ p[[}\DecValTok{4}\NormalTok{]]     }\DocumentationTok{\#\#to save each plot into a list. note the [[4]]}
+
+\NormalTok{g}\OtherTok{\textless{}{-}}\FunctionTok{do.call}\NormalTok{(grid.arrange,plot\_list)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{include\_graphics}\NormalTok{(}\StringTok{"pseuodobulk.png"}\NormalTok{)}
+
+\end{Highlighting}
+\end{Shaded}
+
+Running single cell resolution CNV:After CNVs were identified from the pseudobulk sample, we genotyped the set of CNVs in all cells and generated a binary matrix that represents the existence of CNVs in the cells
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#SCELL\#\#\#\#\#\#\#\#\#\#\#               }
+
+\NormalTok{data }\OtherTok{\textless{}{-}}\NormalTok{ (seuratObj}\SpecialCharTok{@}\NormalTok{assays}\SpecialCharTok{$}\NormalTok{RNA}\SpecialCharTok{@}\NormalTok{counts)}
+\DocumentationTok{\#\# cells with seuratObj$tumorType=="Normal" are used as control}
+\NormalTok{raw.data }\OtherTok{\textless{}{-}} \FunctionTok{generate\_pseudobulkPatientForCasper}\NormalTok{(seuratObj, }\AttributeTok{controlCellID=}\StringTok{"Normal"}\NormalTok{)}
+
+\NormalTok{annotation }\OtherTok{\textless{}{-}} \FunctionTok{generateAnnotation}\NormalTok{(}\AttributeTok{id\_type=}\StringTok{"hgnc\_symbol"}\NormalTok{, }\AttributeTok{genes=}\FunctionTok{rownames}\NormalTok{(data), }\AttributeTok{ishg19=}\NormalTok{F,}
+\AttributeTok{centromere=}\NormalTok{centromere, }\AttributeTok{host=}\StringTok{"uswest.ensembl.org"}\NormalTok{)}
+
+\NormalTok{raw.data }\OtherTok{\textless{}{-}}\NormalTok{ data[}\FunctionTok{match}\NormalTok{( annotation}\SpecialCharTok{$}\NormalTok{Gene,}\FunctionTok{rownames}\NormalTok{(data)), ]}
+\NormalTok{cytoband }\OtherTok{\textless{}{-}}\NormalTok{ cytoband\_hg38}
+\NormalTok{object }\OtherTok{\textless{}{-}} \FunctionTok{CreateCasperObject}\NormalTok{(}\AttributeTok{raw.data=}\NormalTok{raw.data,}\AttributeTok{loh.name.mapping=}\ConstantTok{NULL}\NormalTok{, }
+  \AttributeTok{sequencing.type=}\StringTok{"single{-}cell"}\NormalTok{, }
+  \AttributeTok{cnv.scale=}\DecValTok{3}\NormalTok{, }\AttributeTok{loh.scale=}\DecValTok{3}\NormalTok{, }\AttributeTok{window.length=}\DecValTok{50}\NormalTok{, }\AttributeTok{length.iterations=}\DecValTok{50}\NormalTok{,}
+  \AttributeTok{expr.cutoff =} \FloatTok{0.1}\NormalTok{, }\AttributeTok{filter=}\StringTok{"mean"}\NormalTok{, }\AttributeTok{matrix.type=}\StringTok{"raw"}\NormalTok{, }
+  \AttributeTok{annotation=}\NormalTok{annotation, }\AttributeTok{method=}\StringTok{"iterative"}\NormalTok{, }\AttributeTok{loh=}\ConstantTok{NULL}\NormalTok{, }
+  \AttributeTok{control.sample.ids=}\NormalTok{controls, }\AttributeTok{cytoband=}\ConstantTok{NULL}\NormalTok{)}
+
+
+\NormalTok{object}\OtherTok{\textless{}{-}} \FunctionTok{runCaSpERWithoutLOH}\NormalTok{(object, }\AttributeTok{project=}\FunctionTok{paste0}\NormalTok{(project, }\StringTok{"\_SCELL"}\NormalTok{)) }
+\end{Highlighting}
+\end{Shaded}
+
+Below code shows how to generate CNV input for SCRAM using casper output:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+
+\NormalTok{threshold }\OtherTok{\textless{}{-}} \DecValTok{1}
+\FunctionTok{load}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(project, }\StringTok{"\_BULK\_finalChrMat"}\NormalTok{, }\StringTok{"\_thr\_"}\NormalTok{, threshold, }\StringTok{".rda"}\NormalTok{)}
+\NormalTok{finalChrMat\_bulk }\OtherTok{\textless{}{-}} \FunctionTok{t}\NormalTok{(finalChrMat )}
+
+\NormalTok{threshold }\OtherTok{\textless{}{-}} \DecValTok{3}
+\FunctionTok{load}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(project, }\StringTok{"\_SCELL\_finalChrMat"}\NormalTok{, }\StringTok{"\_thr\_"}\NormalTok{, threshold, }\StringTok{".rda"}\NormalTok{)}
+\NormalTok{finalChrMat}\OtherTok{\textless{}{-}} \FunctionTok{t}\NormalTok{(finalChrMat)}
+
+\ControlFlowTok{if}\NormalTok{(}\FunctionTok{all}\NormalTok{((}\FunctionTok{rownames}\NormalTok{(finalChrMat)}\SpecialCharTok{==}\FunctionTok{colnames}\NormalTok{(seuratObj)))}
+\NormalTok{\{}
+\NormalTok{  cnv }\OtherTok{\textless{}{-}} \FunctionTok{readCASPER\_patientSpec}\NormalTok{(finalChrMat,finalChrMatbulk, seuratObj, }\AttributeTok{plot=}\NormalTok{T, project)}
+  \FunctionTok{save}\NormalTok{(}\StringTok{"cnv"}\NormalTok{, }\StringTok{"example\_cnv\_output.rda"}\NormalTok{)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{snv-calls-with-xcavtr}{%
+\subsubsection{SNV calls with XCAVTR:}\label{snv-calls-with-xcavtr}}
+
+We performed RNA-inferred rare deleterious (COSMIC46-reported and dbSNP47, \textless0.1\% frequency) mutational profiling via our recently developed XCVATR8 tool.
+Below code shows how to generate SNV input for SCRAM using XCAVTR output:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{XCVATR\_folderPath }\OtherTok{\textless{}{-}} \StringTok{"./XCVATR/"}
+\NormalTok{name\_mapping }\OtherTok{\textless{}{-}} \StringTok{""}
+\NormalTok{var\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{readXCVATROutput}\NormalTok{(XCVATR\_folderPath, name\_mapping)}
+\FunctionTok{save}\NormalTok{(}\StringTok{"var\_matrix"}\NormalTok{, }\StringTok{"example\_var\_matrix.rda"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{annotating-non-tumor-host-cells}{%
+\subsection{Annotating Non-Tumor (Host) Cells}\label{annotating-non-tumor-host-cells}}
+
+\hypertarget{summarizing-co-occurring-cell-types-using-maximum-frequent-gene-set-identification}{%
+\subsection{Summarizing co-occurring cell types using maximum frequent gene set identification}\label{summarizing-co-occurring-cell-types-using-maximum-frequent-gene-set-identification}}
+
+Glioma human and mouse cell type markers are manually curated for our scram package.
+
+Markers can be loaded through our SCRAM package
+
+\begin{Shaded}
+\begin{Highlighting}[]
+
+\FunctionTok{data}\NormalTok{(markers\_human\_v37)}
+\end{Highlighting}
+\end{Shaded}
+
+We summarized co-occurring cell types using a frequent itemset rule mining approach. CNV and SNV calls were added to provide an integrated transcriptomic and genomic summary for each cell. An example SCRAM output for a single cell is given as ``glioma stem cell, mature neuron, synaptic neuron, oligodendrocyte precursor cell, chr1p\_deletion, chr19q\_deletion + IDH1:2:208248389 mutation''. We used the tumour and host cell assignments of Step 1 and Step 2 to integrate co-occurring tumour and host cell features.
+
+Below is the main code to run scram with the CNV, SNV and tumor expression models:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{scram\_obj }\OtherTok{\textless{}{-}} \FunctionTok{CreateSCRAMObject}\NormalTok{(}\AttributeTok{seurat\_obj=}\NormalTok{seuratObj, }
+\AttributeTok{expr\_data =}\NormalTok{ seuratObj}\SpecialCharTok{@}\NormalTok{assays}\SpecialCharTok{$}\NormalTok{RNA}\SpecialCharTok{@}\NormalTok{data,}
+\AttributeTok{cluster\_markers=}\NormalTok{combined.markers, }
+\AttributeTok{required\_markers=}\NormalTok{markers\_human}\SpecialCharTok{$}\NormalTok{required\_markers, }
+\AttributeTok{supporting\_markers=}\NormalTok{markers\_human}\SpecialCharTok{$}\NormalTok{supporting\_markers, }
+\AttributeTok{rules=}\NormalTok{markers\_human}\SpecialCharTok{$}\NormalTok{rules,}
+\AttributeTok{cell\_type\_markers=}\NormalTok{markers\_human}\SpecialCharTok{$}\NormalTok{cell\_type\_markers, }\AttributeTok{tumor=}\NormalTok{tumors,}
+\AttributeTok{cnv=}\NormalTok{cnv,  }\AttributeTok{snv=}\NormalTok{var\_matrix[}\StringTok{"IDH1"}\NormalTok{, ],  }\AttributeTok{organism=}\StringTok{"human"}\NormalTok{, }\AttributeTok{min\_support=}\DecValTok{50}\NormalTok{, }\AttributeTok{max\_set\_size=}\DecValTok{50}\NormalTok{, }\AttributeTok{denovo=}\ConstantTok{FALSE}\NormalTok{) }
+
+
+\NormalTok{scram\_obj }\OtherTok{\textless{}{-}} \FunctionTok{runSCRAM}\NormalTok{(}\AttributeTok{object=}\NormalTok{scram\_obj) }
+\FunctionTok{writeSCRAMresults}\NormalTok{(}\AttributeTok{object=}\NormalTok{scram\_obj,project)}
+
+\NormalTok{seuratObj}\SpecialCharTok{$}\NormalTok{celltype }\OtherTok{\textless{}{-}}\NormalTok{ scram\_obj}\SpecialCharTok{@}\NormalTok{cellTypeLevelAnnotationDetailed}
+\NormalTok{seuratObj}\SpecialCharTok{$}\NormalTok{celllineage }\OtherTok{\textless{}{-}}\NormalTok{ scram\_obj}\SpecialCharTok{@}\NormalTok{cellLineageLevelAnnotation}
+\NormalTok{seuratObj}\SpecialCharTok{$}\NormalTok{cellclass\_simple }\OtherTok{\textless{}{-}}\NormalTok{ scram\_obj}\SpecialCharTok{@}\NormalTok{cellClassLevelAnnotation}
+\NormalTok{seuratObj}\SpecialCharTok{$}\NormalTok{cellclass\_dirk}\OtherTok{\textless{}{-}}\NormalTok{ scram\_obj}\SpecialCharTok{@}\NormalTok{dirksCellClassLevelAnnotation}
+\NormalTok{seuratObj}\SpecialCharTok{$}\NormalTok{cellclass\_suva}\OtherTok{\textless{}{-}}\NormalTok{ scram\_obj}\SpecialCharTok{@}\NormalTok{suvaCellClassLevelAnnotation}
+
+\NormalTok{project }\OtherTok{\textless{}{-}} \StringTok{"EXAMPLE"}
+\FunctionTok{save}\NormalTok{(}\StringTok{"seuratObj"}\NormalTok{, }\AttributeTok{file=}\FunctionTok{paste0}\NormalTok{(project, }\StringTok{"\_seuratObj\_ann.rda"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{visualization-of-the-results}{%
+\subsection{Visualization of the results}\label{visualization-of-the-results}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{project }\OtherTok{\textless{}{-}} \StringTok{"EXAMPLE"}
+\FunctionTok{plotUMAPCellClassSimple}\NormalTok{(}\AttributeTok{object=}\NormalTok{scram\_obj, project)}
+\FunctionTok{plotUMAPCellLineage}\NormalTok{(}\AttributeTok{object=}\NormalTok{scram\_obj, project)}
+\FunctionTok{plotUMAPCellTypePerCluster}\NormalTok{(}\AttributeTok{object=}\NormalTok{scram\_obj, project)}
+\FunctionTok{plotPercAnnotatedCells}\NormalTok{ (}\AttributeTok{object=}\NormalTok{scram\_obj, project)}
+\FunctionTok{plotUMAPSuvaCellClass}\NormalTok{ (}\AttributeTok{object=}\NormalTok{scram\_obj, project)}
+\FunctionTok{plotUMAPDirksCellClass}\NormalTok{(}\AttributeTok{object=}\NormalTok{scram\_obj, project)}
+\FunctionTok{plotUMAPSuvaCellClass}\NormalTok{(}\AttributeTok{object=}\NormalTok{scram\_obj, project)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{session-info}{%
+\section*{Session info}\label{session-info}}
+\addcontentsline{toc}{section}{Session info}
+
+Here is the output of \texttt{sessionInfo()} on the system on which this document was
+compiled running pandoc 2.14.0.3:
+
+\begin{verbatim}
+## R version 4.1.1 (2021-08-10)
+## Platform: x86_64-apple-darwin17.0 (64-bit)
+## Running under: macOS Big Sur 10.16
+## 
+## Matrix products: default
+## BLAS:   /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] BiocStyle_2.20.2
+## 
+## loaded via a namespace (and not attached):
+##  [1] bookdown_0.30       digest_0.6.30       magrittr_2.0.3     
+##  [4] evaluate_0.18       rlang_1.0.6         stringi_1.7.8      
+##  [7] cli_3.4.1           rstudioapi_0.14     rmarkdown_2.18     
+## [10] tools_4.1.1         stringr_1.4.1       xfun_0.34          
+## [13] yaml_2.3.6          fastmap_1.1.0       compiler_4.1.1     
+## [16] BiocManager_1.30.19 htmltools_0.5.3     knitr_1.40
+\end{verbatim}
+
+
+\end{document}

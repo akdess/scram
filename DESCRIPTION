@@ -1,0 +1,15 @@
+Package: scramv2
+Type: Package
+Title: 
+Version: 0.1.0
+Author: Rachel Naomi Curry, Arif O. Harmanci, Akdes Serin Harmanci
+Maintainer: Akdes Serin Harmanci <akdes.serinharmanci@bcm.edu> 
+Description: 
+Encoding: UTF-8
+LazyData: true
+LinkingTo: Rcpp
+Depends: doParallel, dplyr, Seurat, arules, foreach, mclust, ggplot2, CaSpER
+RoxygenNote: 7.2.2
+biocViews:
+Suggests: knitr,BiocStyle, rmarkdown
+VignetteBuilder: knitr
