@@ -24,6 +24,8 @@ install.packages("CaSpER_0.2.0.gz", repos = NULL, type="source")
 install.packages("scramv2_0.1.0.tar.gz", repos = NULL, type="source")
 ```
 
+# Example input data and source files are here: https://zenodo.org/records/8075888
+
 # Input data
 
 The input to scram consists of Seurat R object of raw expression matrix. We first save the R object in h5ad for predicting cell-types on our trained deep learning models. 
