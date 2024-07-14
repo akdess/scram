@@ -81,7 +81,7 @@ Running single cell resolution CNV: After CNVs were identified from the pseudobu
 ```r
 ### single cell level CNV calling  takes (~5 hours for 200K cells) long for large scRNA-Seq datasets. 
 ### the output is provided under cnv_casper folder
-scram_obj <- runCASPER_Bulk_Scell (object=scram_obj, sampleCol="orig.ident", project)
+scram_obj <- runCASPER_Bulk_Scell(object=scram_obj, sampleCol="orig.ident", project)
 ```
 
 
