@@ -6,6 +6,7 @@
 This vignette shows the basic steps for running SCRAM.
 
 Please use the files under example folder for test run. 
+# Example input data and source files are here: https://zenodo.org/records/8075888
 
 # Installation from github
 
@@ -16,8 +17,8 @@ if (!require("devtools")) {
   install.packages("devtools")
 }
 devtools::install_github("akdess/scram", dependencies = TRUE, build_vignettes = FALSE)
+devtools::install_github("akdess/casper_0.2.0", dependencies = TRUE, build_vignettes = FALSE)
 ```
-# Example input data and source files are here: https://zenodo.org/records/8075888
 
 # Installation from source
 ```r
@@ -26,33 +27,15 @@ install.packages("scramv2_0.1.0.tar.gz", repos = NULL, type="source")
 ```
 
 
-# Input data
-
-The input to scram consists of Seurat R object of raw expression matrix. We first save the R object in h5ad for predicting cell-types on our trained deep learning models. 
-
-
-```r
-library(Seurat)
-library(SeuratDisk)
-load("glioma_seuratObj.rda")
-```
-
 ## Predicting CellTypes using Pretrained Neural Network Models
 
-We next predict the cell types on our data using our pretrained deep learning models.  
+We first save the R object in h5ad for predicting cell-types on our trained deep learning models. We next predict the cell types on our data using our pretrained deep learning models.  
 
-Output of the python code is provided under example/nn_models folder. 
 
-```r
-object <- CreateSeuratObject(counts = seuratObj@assays$RNA@counts, project = "glioma", meta.data=seuratObj@meta.data)
-DefaultAssay(object) <- "RNA"
-SaveH5Seurat(object, filename = "glioma.h5Seurat", overwrite=T)
-Convert("glioma.h5Seurat", dest = "h5ad", assay = "RNA", overwrite=T)
 ```
-
-```r
-cd example/nn_models;
-#python3 ../..//NNMs_python/nn_classifier_pretrained.py
+cd example;
+<path_to_scripts_folder>/run_conversion.sh  glioma_seuratObj.rda  ./
+python3 nn_classifier_pretrained.py 041524_glioma  ./adata.h5ad --normalize_test <path to nn_models folder> ./
 ```
 
 We next load the seuratobject again in R with the predicted model outcomes. 
@@ -62,7 +45,8 @@ setwd("example")
 load("glioma_seuratObj.rda")
 project <- "example"
 scram_obj <- CreateSCRAMObject(seurat_obj=seuratObj,  organism="human", min_support=0.1, max_set_size=50) 
-scram_obj <- createCellTypeMatrix(object=scram_obj, nn_path="./nn_models/", prob_thr=0.9)
+scram_obj <-createCellTypeMatrix (object=scram_obj, nn_path="./041524_glioma_multipleNeuralNetworks/", prob_thr=0.9, refs=c('suva_idh_a_o', 'hpa_brain_simple', 'allen_class_label_main', 'allen_neurons_only', 'TissueImmune', 'aldinger', 'codex', 'suva', 'bhaduri_withAge', 'dirks_primary_gbm_combined'), run="041524_glioma", pretrained=T)
+
 ```
 
 ## Annotating Tumor Cells
@@ -100,16 +84,17 @@ Final Tumor annotation using CNV, SNV, expression modelling and neural network p
 
 ```r
 load("cnv_casper/example_BULK_finalChrMat_thr_1.rda")
-scram_obj <- runFinalTumorAnnotation(object=scram_obj, loadCasper=T, finalChrMat_bulk=finalChrMat_bulk, loadXCVATR=T, sampleCol="orig.ident", project="example", model_genes=c("PDGFRA" ,"EGFR"  ,"SOX2" ))
+scram_obj <- runFinalTumorAnnotation(object=scram_obj, loadNumbat=F, loadCasper=T, finalChrMat_bulk=finalChrMat_bulk, loadXCVATR=T, sampleCol="orig.ident", project="example", model_genes=c("PDGFRA" ,"EGFR"  ,"SOX2" ))
+
 ```
 
 
 We summarized co-occurring cell types using a frequent itemset rule mining approach. CNV and SNV calls were added to provide an integrated transcriptomic and genomic summary for each cell. An example SCRAM output for a single cell is given as “glioma stem cell, mature neuron, synaptic neuron, oligodendrocyte precursor cell, chr1p_deletion, chr19q_deletion + IDH1:2:208248389 mutation”. We used the tumour and host cell assignments of the previous steps to integrate co-occurring tumour and host cell features.
 
 ```r
+
 scram_obj <- runSCRAM (object=scram_obj) 
 writeSCRAMresults(object=scram_obj,project)
-seuratObj$celltype <- scram_obj@cellTypeLevelAnnotationDetailed
 
 ```
 
