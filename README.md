@@ -5,9 +5,6 @@
 **Updated version of CaSpER:**  is here:  [https://github.com/akdess/scram](https://github.com/akdess/casper_0.2.0/)
 This vignette shows the basic steps for running SCRAM.
 
-Please use the files under example folder for test run. 
-# Example input data and source files are here: https://zenodo.org/records/8075888
-
 # Installation from github
 
 Install latest version from GitHub (requires [devtools](https://github.com/hadley/devtools) package):
