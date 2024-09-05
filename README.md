@@ -20,14 +20,10 @@ devtools::install_github("akdess/scram", dependencies = TRUE, build_vignettes = 
 devtools::install_github("akdess/casper_0.2.0", dependencies = TRUE, build_vignettes = FALSE)
 ```
 
-# Installation from source
-```r
-install.packages("CaSpER_0.2.0.gz", repos = NULL, type="source")
-install.packages("scramv2_0.1.0.tar.gz", repos = NULL, type="source")
-```
 
 
-## Predicting CellTypes using Pretrained Neural Network Models
+
+# Predicting CellTypes using Pretrained Neural Network Models
 
 We first save the R object in h5ad for predicting cell-types on our trained deep learning models. We next predict the cell types on our data using our pretrained deep learning models.  
 
