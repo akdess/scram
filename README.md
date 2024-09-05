@@ -73,7 +73,7 @@ Below code shows how to generate SNV input for SCRAM using XCAVTR output:
 var_matrix <- readXCVATROutput(XCVATR_folderPath="./XCVATR/", name_mapping)
 ```
 
-Final Tumor annotation using CNV, SNV, expression modelling and neural network predictions
+### Final Tumor annotation using CNV, SNV, expression modelling and neural network predictions
 
 ```r
 load("cnv_casper/example_BULK_finalChrMat_thr_1.rda")
@@ -81,6 +81,7 @@ scram_obj <- runFinalTumorAnnotation(object=scram_obj, loadNumbat=F, loadCasper=
 
 ```
 
+## Summarize Co-occuring Cell Types
 
 We summarized co-occurring cell types using a frequent itemset rule mining approach. CNV and SNV calls were added to provide an integrated transcriptomic and genomic summary for each cell. 
 
