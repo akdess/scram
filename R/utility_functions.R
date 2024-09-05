@@ -9,11 +9,12 @@ generate_HighExpressionFeaturesFromModel <- function(seuratObj,
   data("CDK4_mclust_model")
   thresholds <- rep(Inf, length(tumor_markers))
   names(thresholds) <- tumor_markers
-    data <- seuratObj@assays$RNA@data[match(tumor_markers, rownames(seuratObj@assays$RNA@data)), ]
+  data <- GetAssayData(seuratObj, assay='RNA', layer='data')
+  data <- data[match(tumor_markers, rownames(data)), ]
   for (i in 1:length(tumor_markers))
   {
     model <- NULL
-    human_inhouse_data <- seuratObj@assays$RNA@data[match(tumor_markers[i], rownames(seuratObj@assays$RNA@data)), ]
+    human_inhouse_data <- data[match(tumor_markers[i], rownames(data)), ]
     c("" ,""  , "CDK4"  , "" ,"SOX2"   , "")
     if(sum(human_inhouse_data)>0){
         d <- as.numeric(human_inhouse_data)
@@ -58,16 +59,16 @@ generate_HighExpressionFeaturesFromModel <- function(seuratObj,
 
 writeSCRAMresults <- function(object,  project)
 {
-  cell_type_level=unique(bind_rows(object@setsAnnotatedCellTypeLevel, .id = "cluster_id"))
-  results_maximal <- list(cell_type_level=unique(cell_type_level[cell_type_level$is.maximal, ])) 
+  results <- list(cell_type_level=unique(bind_rows(object@setsAnnotatedCellTypeLevel, .id = "cluster_id")),
+   cell_class_level=unique(bind_rows(object@setsAnnotatedCellClassLevel, .id = "cluster_id")))
+   
+  results_maximal <- list(
+  cell_type_level=unique(results$cell_type_level[results$cell_type_level$is.maximal, ]),
+  cell_class_level=unique(results$cell_class_level[results$cell_class_level$is.maximal, ])) 
+
   openxlsx::write.xlsx(results_maximal,file = paste0( project, ".SCRAM.MAXIMAL.xlsx"), overwrite = T)
-   cell_type_level=unique(bind_rows(object@setsAnnotatedCellTypeLevel, .id = "cluster_id"))
-  results_maximal <- list(cell_type_level=unique(cell_type_level[, ])) 
-  openxlsx::write.xlsx(results_maximal,file = paste0( project, ".SCRAM.ALL.xlsx"), overwrite = T)
-
+  openxlsx::write.xlsx(results,file = paste0(project, ".SCRAM.xlsx"), overwrite = T)
 }
-
-
 
 readCASPER<- function(finalChrMat, seuratObj, amp_chr, del_chr, min_threshold, plot=T, project)
 {

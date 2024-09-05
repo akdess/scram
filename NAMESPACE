@@ -1,5 +1,7 @@
 export(CreateSCRAMObject)
 export(runCellTypeLevelSCRAM)
+export(runCellClassLevelSCRAM)
+export(readModelsPretrained)
 export(annotateHighRibosomalCells)
 export(runSCRAM)
 export(plotUMAPCellTypePerCluster)
