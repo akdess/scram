@@ -2,7 +2,7 @@
 # Overview
 
 **SCRAM** is available from https://github.com/akdess/scram 
-
+**Updated version of CaSpER:**  is here:  [https://github.com/akdess/scram](https://github.com/akdess/casper_0.2.0/)
 This vignette shows the basic steps for running SCRAM.
 
 Please use the files under example folder for test run. 
