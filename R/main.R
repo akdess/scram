@@ -1,4 +1,4 @@
-
+scram_obj
 CreateSCRAMObject <- function(seurat_obj,
                               organism,
                               min_support, max_set_size) {
@@ -19,25 +19,25 @@ readModelsPretrained <- function(path, prob_thr, refs, run)
     # Try to read the CSV file and process it
     tryCatch({
         dat <- read.csv(paste0(path, "/", run, "_", refs[i], "_neuralNetwork_scores.csv"))
-        
+
         # Check for the column with "_clusterScore"
         cluster_score_col <- grep("_clusterScore", colnames(dat))
         if (length(cluster_score_col) == 0) {
         stop(paste("No '_clusterScore' column found in", refs[i], "_neuralNetwork_scores.csv"))
         }
-        
+
         unknown <- which(dat[, cluster_score_col] < prob_thr)
-        
+
         # Check for the column with "_cluster$"
         cluster_col <- grep("_cluster$", colnames(dat))
         if (length(cluster_col) == 0) {
         stop(paste("No '_cluster' column found in", refs[i], "_neuralNetwork_scores.csv"))
         }
-        
+
         dat[unknown, cluster_col] <- ""
         results_list[[i]] <- dat
         names(results_list)[i] <- refs[i]
-        
+
     }, error = function(e) {
         # If an error occurs, print a message and continue with the next iteration
         message(paste("Error processing", refs[i], ": ", e$message))
@@ -67,8 +67,8 @@ readMODELS <- function(path, prob_thr)
 
 f3 <- function(vec) {
   U <- sort(unique(vec))
-  M <- matrix(0, nrow = length(vec), 
-              ncol = length(U), 
+  M <- matrix(0, nrow = length(vec),
+              ncol = length(U),
               dimnames = list(NULL, U))
   M[cbind(seq_len(length(vec)), match(vec, U))] <- 1L
   M
@@ -87,16 +87,18 @@ createModelMatrix <- function(results_list,seuratObj){
 
 createCellTypeMatrix <- function(object, nn_path, prob_thr, refs, run, pretrained=T)
 {
+    data("celltype_mapping")
     if (pretrained) results_list <- readModelsPretrained(path=nn_path, prob_thr=prob_thr, refs=refs, run=run)
     else {  results_list <- readMODELS(path=nn_path, prob_thr=prob_thr) }
-    seuratObj <- object@seurat_obj 
+    seuratObj <- object@seurat_obj
     models <- createModelMatrix(results_list,seuratObj)
-    
+
     models <- t(models)
     models <- models[rownames(models)!="", ]
-    
+    models <- models[rownames(models)!="NA_suva", ]
+    #models <- models[rownames(models)!="immune_suva", ]
+    models <- models[rownames(models)!="Oligo", ]
     object@models <- models
-   
     object@results_list <- results_list
 
     rownames(models) <- ct[match(rownames(models),ct$celltype),"celltype_simplified"]
@@ -107,6 +109,11 @@ createCellTypeMatrix <- function(object, nn_path, prob_thr, refs, run, pretraine
     simplified_models["tumor",] <- simplified_models["tumor",]
     simplified_models["immune",simplified_models["immune",]<3] <- 0
     simplified_models["immune",simplified_models["immune",]>2] <- 1
+ #   simplified_models <- simplified_models[is.na(rownames(simplified_models)),  ]
+
+    simplified_models["immune",] <-  simplified_models["immune",] + apply(object@models[rownames(object@models)[grep("primary_gbm", rownames(object@models))], ], 2, sum)
+    simplified_models["immune",simplified_models["immune",]>1] <- 1
+
     object@simplified_models <- simplified_models
     object
 }
@@ -117,7 +124,7 @@ runCASPER_Bulk_Scell<- function (object, sampleCol="orig.ident", project){
 
     simplified_models <- object@simplified_models
     seuratObj <- object@seurat_obj
-    simplified_models["tumor",] <- simplified_models["tumor",] +simplified_models["cycling progenitor cell",] 
+    simplified_models["tumor",] <- simplified_models["tumor",] +simplified_models["cycling progenitor cell",]
 
     possible_tumors  <- which(simplified_models["tumor",] >0)
     control_cells <- which(simplified_models["immune",] >0)
@@ -133,47 +140,47 @@ runCASPER_Bulk_Scell<- function (object, sampleCol="orig.ident", project){
     raw.data<- t(apply(raw.data, 1, function(x) as.numeric(x)))
     colnames(raw.data) <- samples
 
-    annotation <- generateAnnotation(id_type="hgnc_symbol", genes=rownames(raw.data), ishg19=F, centromere=centromere)
+    annotation <- generateAnnotation(id_type="hgnc_symbol", genes=rownames(raw.data), ishg19=F)
     raw.data <- raw.data[match( annotation$Gene,rownames(raw.data)), ]
 
     cytoband <- cytoband_hg38
-    casper_object <- CreateCasperObject(raw.data=raw.data,loh.name.mapping=NULL, 
-        sequencing.type="bulk", 
+    casper_object <- CreateCasperObject(raw.data=raw.data,loh.name.mapping=NULL,
+        sequencing.type="bulk",
         cnv.scale=3, loh.scale=3, window.length=50, length.iterations=50,
-        expr.cutoff = 1, filter="mean", matrix.type="raw", 
-        annotation=annotation, method="iterative", loh=NULL, 
+        expr.cutoff = 1, filter="mean", matrix.type="raw",
+        annotation=annotation, method="iterative", loh=NULL,
         control.sample.ids="control", cytoband=cytoband)
-   
+
     dir.create("cnv_casper")
-    casper_object<- runCaSpERWithoutLOH(casper_object, project=paste0("./cnv_casper/",project, "_BULK")) 
+    casper_object<- runCaSpERWithoutLOH(casper_object, project=paste0("./cnv_casper/",project, "_BULK"))
     object@casper_bulk <- casper_object
-   
+
     DefaultAssay(seuratObj) <- "RNA"
     data <-  GetAssayData(seuratObj, assay='RNA', layer='counts')
     ## cells with seuratObj$tumorType=="Normal" are used as control
-    annotation <- generateAnnotation(id_type="hgnc_symbol", genes=rownames(data), ishg19=F,
-    centromere=centromere)
+    annotation <- generateAnnotation(id_type="hgnc_symbol", genes=rownames(data), ishg19=F)
     controls <- colnames(seuratObj)[control_cells]
 
     raw.data <- data[match( annotation$Gene,rownames(data)), ]
     cytoband <- cytoband_hg38
-    
+
     print("running single cell CNV calling step, might take same time...")
-    casper_object <- CreateCasperObject(raw.data=as.matrix(raw.data),loh.name.mapping=NULL, 
-    sequencing.type="single-cell", 
+    casper_object <- CreateCasperObject(raw.data=as.matrix(raw.data),loh.name.mapping=NULL,
+    sequencing.type="single-cell",
     cnv.scale=3, loh.scale=3, window.length=50, length.iterations=50,
-    expr.cutoff = 0.1, filter="mean", matrix.type="raw", 
-    annotation=annotation, method="iterative", loh=NULL, 
+    expr.cutoff = 0.1, filter="mean", matrix.type="raw",
+    annotation=annotation, method="iterative", loh=NULL,
     control.sample.ids=controls, cytoband=cytoband)
 
-    casper_object<- runCaSpERWithoutLOH(casper_object, project=paste0("./cnv_casper/",project, "_SCELL")) 
+    casper_object<- runCaSpERWithoutLOH(casper_object, project=paste0("./cnv_casper/",project, "_SCELL"))
     object@casper_scell <- casper_object
     object
- 
+
 }
 
 runFinalTumorAnnotation <- function(object,  loadCasper=T, loadNumbat=T, finalChrMat_bulk, loadXCVATR=T, sampleCol="orig.ident", project, bulk_thr=1, scell_thr=1, model_genes=c("PDGFRA" ,"EGFR"  ,"SOX2" ))
 {
+    data("celltype_mapping")
     seuratObj <- object@seurat_obj
     simplified_models <- object@simplified_models
     object@cnv  <- NULL
@@ -181,7 +188,7 @@ runFinalTumorAnnotation <- function(object,  loadCasper=T, loadNumbat=T, finalCh
     object@tumor <- NULL
     seuratObj$snv_num <- 0
     seuratObj$cnv_num <- 0
-    
+
     if(loadCasper) {
         if(is.null(finalChrMat_bulk)){
             bulk_thr <- 1
@@ -196,7 +203,7 @@ runFinalTumorAnnotation <- function(object,  loadCasper=T, loadNumbat=T, finalCh
         finalChrMat <- finalChrMat[ match(common, rownames(finalChrMat)) , ,drop=F]
         finalChrMat <- finalChrMat[ match(colnames(seuratObj), rownames(finalChrMat)) , ,drop=F]
         if(!all((rownames(finalChrMat)==colnames(seuratObj)))) stop("CNV sample names and SeuratObject sample names are different")
-        
+
         if(all((rownames(finalChrMat)==colnames(seuratObj))))
         {
              cnv <- readCASPER_patientSpec(finalChrMat,finalChrMatbulk, seuratObj, plot=T, project)
@@ -209,17 +216,17 @@ runFinalTumorAnnotation <- function(object,  loadCasper=T, loadNumbat=T, finalCh
         cnv_num <- apply(cnv, 2, function(x) length(which(x!=0)))
 
         seuratObj$cnv_num <- cnv_num
-        
+
         cnv_casper <- paste0(amp, del, sep=",")
         cnv_casper_ann <- rep(1, length(cnv_casper))
         cnv_casper_ann[which(cnv_casper==",")] <- 0
         seuratObj$cnv_casper_ann <- cnv_casper_ann
-        
+
     }
     if(loadXCVATR){
         load(paste0("./XCVATR/var_matrix_", project, ".rda"))
          if(!all((colnames(var_matrix)==colnames(seuratObj)))) stop("XCVATR sample names and SeuratObject sample names are different")
-      
+
         var_matrix[var_matrix>1] <- 0
         object@snv <- var_matrix
         seuratObj$snv_num <- apply(var_matrix, 2, sum)
@@ -229,7 +236,7 @@ runFinalTumorAnnotation <- function(object,  loadCasper=T, loadNumbat=T, finalCh
         if(file.exists(paste0("./cnv_casper/", project,"_cnv_numbat.rda"))) load(paste0("./cnv_casper/", project,"_cnv_numbat.rda"))
         if(!file.exists(paste0("./cnv_casper/", project,"_cnv_numbat.rda"))) stop("Numbat file do not exist")
         if(!all((colnames(cnv_numbat)==colnames(seuratObj)))) stop("NUMBAT sample names and SeuratObject sample names are different")
-      
+
       #  cnv_num <- apply(cnv_numbat, 2, function(x) length(which(x!=0)))
         seuratObj$cnv_numbat <- as.vector(cnv_numbat)
         object@cnv <- rbind(object@cnv, cnv_numbat)
@@ -240,21 +247,21 @@ runFinalTumorAnnotation <- function(object,  loadCasper=T, loadNumbat=T, finalCh
 
     expr_features <- generate_HighExpressionFeaturesFromModel(seuratObj, tumor_markers=model_genes , k=3)
     tumor_m <- expr_features$tumor_markers
-    rownames(tumor_m)[1:3] <- paste0("HIGH_",rownames(tumor_m)[1:3] )
+    rownames(tumor_m) <- paste0("HIGH_",rownames(tumor_m))
     object@tumor <- tumor_m
     tumor_m <- apply(tumor_m, 2, sum)
     tumor_m[tumor_m<2]<-0
     tumor_m[tumor_m==2]<-1
     #object@tumor <- tumor_m
     seuratObj$tumor_m <- as.vector(tumor_m)
-    
+
     tumors <-   tumor_m+ simplified_models["tumor",] +simplified_models["Developmental_GSC",] + simplified_models["Injury_GSC",] +seuratObj$cnv_num + seuratObj$snv_num
     seuratObj$isTumor <- "non_tumor"
     seuratObj$isTumor[tumors>1] <- "tumor"
     seuratObj$num_feat <- as.vector(tumors)
 
-    simplified_models["tumor",] <- simplified_models["tumor",] +simplified_models["Developmental_GSC",] +simplified_models["Injury_GSC",] 
-   
+    simplified_models["tumor",] <- simplified_models["tumor",] +simplified_models["Developmental_GSC",] +simplified_models["Injury_GSC",]
+
     seuratObj$isImmune <- "no"
     seuratObj$isImmune[simplified_models["immune", ]==1] <- "yes"
     models <- object@models
@@ -281,6 +288,10 @@ runFinalTumorAnnotation <- function(object,  loadCasper=T, loadNumbat=T, finalCh
     simplified_models["MESlike_suva", seuratObj$isTumor=="non_tumor"] <- 0
     simplified_models["AClike_suva", seuratObj$isTumor=="non_tumor"] <- 0
 
+
+    simplified_models["tumor", seuratObj$isTumor=="non_tumor"] <- 0
+    simplified_models["immune", seuratObj$isImmune=="no"] <- 0
+
     seuratObj$cellclass_annotation <- apply(simplified_models, 2, function(x) paste0(rownames(simplified_models)[which(x>0)], collapse=","))
     seuratObj$celltype_annotation <- apply(models, 2, function(x) paste0(rownames(models)[which(x>0)], collapse=","))
     object@simplified_models <- simplified_models
@@ -297,6 +308,8 @@ runCellClassLevelSCRAM <- function(object) {
     tumor <- object@tumor
     freq_l2 <- list()
     ann_l <- list()
+
+
     if (is.null(seurat_obj$seurat_clusters)) {
             stop("seurat object clusters are missing")
     }
@@ -308,7 +321,7 @@ runCellClassLevelSCRAM <- function(object) {
         seuratObj_sub <- subset(seurat_obj, idents = (cls))
         print (paste0("running cluster ", cls,"..."))
 
-      
+
         ann2 <- models[,  seurat_obj$seurat_clusters == (cls), drop = F]
         ann2 <- ann2[rownames(ann2) %in% names(which(apply(ann2, 1, sum) > 0)), , drop = F]
         freq_l2[[i]] <- data.frame()
@@ -318,16 +331,16 @@ runCellClassLevelSCRAM <- function(object) {
         snv_ann <- data.frame()
         tumor_ann <- data.frame()
         if (!is.null(cnv)) {
-            ann <- cnv[, seurat_obj$seurat_clusters == (cls), drop = F]           
+            ann <- cnv[, seurat_obj$seurat_clusters == (cls), drop = F]
         }
 
-        if (!is.null(snv)) {  
+        if (!is.null(snv)) {
             snv_ann <- snv[, seurat_obj$seurat_clusters == (cls), drop = F]
-        }     
-        
+        }
+
         if (!is.null(tumor)) {
             tumor_ann <- tumor[, seurat_obj$seurat_clusters == (cls), drop = F]
-           
+
         }
 
         ann <- rbind(ann, snv_ann, tumor_ann)
@@ -340,7 +353,7 @@ runCellClassLevelSCRAM <- function(object) {
             if (nrow(ann) >= 0) {
                 trans1 <- transactions(as.matrix(t(ann)))
                 if (dim(trans1)[2] > 0) {
-                    support <- object@min_support 
+                    support <- object@min_support
                     #support <- object@min_support / dim(trans1)[1]
                    # if ((dim(trans1)[1] * 0.3) < object@min_support) support <- 0.3
                     freq <- eclat(trans1, parameter = list(support = support, maxlen = object@max_set_size), control = list(verbose = F))
@@ -360,9 +373,9 @@ runCellClassLevelSCRAM <- function(object) {
                 }
             }
         }
-        
+
     }
-    
+
     object@setsAnnotatedCellClassLevel <- freq_l2
     object@cellClassLevelAnnotation <- ann_l
     object@cellClassAnnotationDetailed <- rep("", length(Idents(seurat_obj)))
@@ -398,7 +411,7 @@ runCellTypeLevelSCRAM <- function(object) {
         seuratObj_sub <- subset(seurat_obj, idents = (cls))
         print (paste0("running cluster ", cls,"..."))
 
-      
+
         ann2 <- models[,  seurat_obj$seurat_clusters == (cls), drop = F]
         ann2 <- ann2[rownames(ann2) %in% names(which(apply(ann2, 1, sum) > 0)), , drop = F]
         freq_l2[[i]] <- data.frame()
@@ -408,16 +421,16 @@ runCellTypeLevelSCRAM <- function(object) {
         snv_ann <- data.frame()
         tumor_ann <- data.frame()
         if (!is.null(cnv)) {
-            ann <- cnv[, seurat_obj$seurat_clusters == (cls), drop = F]           
+            ann <- cnv[, seurat_obj$seurat_clusters == (cls), drop = F]
         }
 
-        if (!is.null(snv)) {  
+        if (!is.null(snv)) {
             snv_ann <- snv[, seurat_obj$seurat_clusters == (cls), drop = F]
-        }     
-        
+        }
+
         if (!is.null(tumor)) {
             tumor_ann <- tumor[, seurat_obj$seurat_clusters == (cls), drop = F]
-           
+
         }
 
         ann <- rbind(ann, snv_ann, tumor_ann)
@@ -430,7 +443,7 @@ runCellTypeLevelSCRAM <- function(object) {
             if (nrow(ann) >= 0) {
                 trans1 <- transactions(as.matrix(t(ann)))
                 if (dim(trans1)[2] > 0) {
-                    support <- object@min_support 
+                    support <- object@min_support
                     #support <- object@min_support / dim(trans1)[1]
                    # if ((dim(trans1)[1] * 0.3) < object@min_support) support <- 0.3
                     freq <- eclat(trans1, parameter = list(support = support, maxlen = object@max_set_size), control = list(verbose = F))
@@ -450,7 +463,7 @@ runCellTypeLevelSCRAM <- function(object) {
                 }
             }
         }
-        
+
     }
     object@setsAnnotatedCellTypeLevel <- freq_l2
     object@cellTypeLevelAnnotation <- ann_l
