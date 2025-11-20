@@ -1,4 +1,4 @@
-scram_obj
+
 CreateSCRAMObject <- function(seurat_obj,
                               organism,
                               min_support, max_set_size) {
