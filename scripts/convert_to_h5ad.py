@@ -28,6 +28,7 @@ with open(gene_names_path, 'r') as f:
 # Assign metadata and gene names to AnnData
 adata.obs = cell_meta
 adata.var.index = gene_names
+adata.obs_names = adata.obs["cell_id"] 
 
 output_file = f'{input_dir}/adata.h5ad'
 

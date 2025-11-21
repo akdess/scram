@@ -16,6 +16,7 @@ load(seuratObj_path) # Modify according to your data format
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
+seuratObj@meta.data$cell_id <- rownames(seuratObj@meta.data)
 
 # Set the working directory to the output directory
 setwd(output_dir)
